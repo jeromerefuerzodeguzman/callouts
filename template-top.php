@@ -18,8 +18,7 @@
 	
 	/*css of the whole table*/
 	.contentTable {
-		margin: 5px 0px 5px 10px;
-		width: 380px;
+		width: 815px;
 		text-align: center;
 	}
 
