@@ -77,10 +77,9 @@
 <!-- jQuery -->
 <script type="text/javascript" src="js/lib/jquery/jquery-1.9.1.min.js"></script>
 
-<!-- DatePicker -->
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<!-- jQueryUI -->
+<link rel="stylesheet" href="js/lib/jqueryui/css/smoothness/jquery-ui-1.10.2.custom.min.css" />
+<script src="js/lib/jqueryui/js/jquery-ui-1.10.2.custom.min.js"></script>
 
 <script>
   $(function() {
