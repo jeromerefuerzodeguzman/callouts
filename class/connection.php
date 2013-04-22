@@ -3,11 +3,6 @@
 /**
  * 	Database connections on Noble using ODBC DNS
  * 	
- *	Available DNS:
- *		1. northstar-apps
- *		2. northstar-appshst
- *		3. northstar-ddp
- * 	
  */
 
 

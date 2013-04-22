@@ -18,15 +18,16 @@
 	
 	/*css of the whole table*/
 	.contentTable {
-		width: 778px;
+		margin: 5px 0px 5px 10px;
+		width: 380px;
 		text-align: center;
 	}
 
 	/*css of the headers*/
-	.tableHead tr th{
+	.tableHead {
 		font-family: verdana,arial,sans-serif;
 		font-weight: bold; 
-		font-size: 12px; 
+		font-size: 13px; 
 		padding: 8px 0px 8px 0px;
 		background-color: #86A8D6;
 	}
@@ -34,7 +35,7 @@
 	/*css for the contents*/
 	.contentTable tr td{
 		font-family: verdana,arial,sans-serif;
-		font-size: 11px;
+		font-size: 12px;
 		padding: 5px 0px 5px 0px;
 	}
 
@@ -50,6 +51,10 @@
 	/*highlights the campaigns name*/
 	.groupName {
 		font-weight: bold;
+	}
+
+	#subtotal {
+		background-color: yellow;
 	}
 
 </style>
@@ -79,10 +84,7 @@
 
 <script>
   $(function() {
-    $( ".datepicker" ).datepicker({
-      changeMonth: true,
-      changeYear: true
-    });
+    $( ".datepicker" ).datepicker();
   });
 </script>
 
