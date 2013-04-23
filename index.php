@@ -36,15 +36,10 @@
 				<td>8:00 pm - 8:59pm</td>
 				<td>9:00 pm - 9:59pm</td>
 				<td>10:00 pm - 10:59pm</td>
+				<td>Calls per Agent</td>
 			</tr>
 			<?php 
 				
-				//subtotal
-				$sub_total = 0;
-
-				
-				
-
 				//variable for computing calls fo each columns
 				$twelve_to_one = 0;
 				$one_to_two = 0;
@@ -67,6 +62,12 @@
 					//holder for last agentid
 					$last_agent = '';
 
+					//variable for total of each agent
+					$total_calls_per_agent = 0;
+
+					//overall total calls
+					$total_calls = 0;
+
 					$record = new Record;
 
 					$start_date = $_POST['startDate'];
@@ -78,7 +79,7 @@
 						
 						while ($row = odbc_fetch_array($result)) {
 							
-
+					
 							//for computing the sub-total per column
 							switch ($row['date_hour']) {
 							   	case '12':
@@ -126,6 +127,7 @@
 									}
 								}
 								echo '<td>'. $row['total'] .'</td>';
+								$total_calls_per_agent += $row['total'];
 								$date_hour_holder = $row['date_hour'];	
 
 								
@@ -147,9 +149,11 @@
 											$ctr--;
 										}
 										echo '<td>'. $row['total'] .'</td>';
+										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
 									} else {
 										echo '<td>'. ($row['date_hour'] == '12' ? $row['total'] : 0) .'</td>';
+										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
 									}
 									
@@ -163,8 +167,10 @@
 										$date_hour_holder++;
 									}
 									//closest the row for the next agent to be displayed
+									$total_calls += $total_calls_per_agent;
+									echo '<td>'. $total_calls_per_agent .'</td>';
 									echo '</tr>';
-
+									$total_calls_per_agent = 0;
 									//populates the next row for another agent
 									$last_agent = $row['agentid'];
 									echo '<tr onmouseover="mouseOn(this)" onmouseout="mouseOut(this)">';
@@ -182,9 +188,11 @@
 											$ctr--;
 										}
 										echo '<td>'. $row['total'] .'</td>';
+										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
 									} else {
 										echo '<td>'. ($row['date_hour'] == '12' ? $row['total'] : 0) .'</td>';
+										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
 									}
 									
@@ -203,6 +211,8 @@
 								echo '<td>0</td>';
 								$col_ctr++;
 							}					
+							$total_calls += $total_calls_per_agent;
+							echo '<td>'. $total_calls_per_agent .'</td>';
 							echo '</tr>';
 						}
 						
@@ -225,6 +235,7 @@
 				<td><?php echo $eight_to_nine; ?></td>
 				<td><?php echo $nine_to_ten; ?></td>
 				<td><?php echo $ten_to_eleven; ?></td>
+				<td><?php echo $total_calls ?></td>
 			</tr>
 		</table>
 	</div>
