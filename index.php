@@ -77,7 +77,7 @@
 						$result = odbc_exec($record->conn, $query);
 						
 						while ($row = odbc_fetch_array($result)) {
-							//var_dump($row);
+							
 
 							//for computing the sub-total per column
 							switch ($row['date_hour']) {
@@ -195,14 +195,17 @@
 							}
 
 						}
-					
-						//this will print columns from the last call he/she made till the end shift
-						$col_ctr = $date_hour_holder;
-						while($col_ctr < 22) {
-							echo '<td>0</td>';
-							$col_ctr++;
+						//check if we have fetch a row from the database or not
+						if($date_hour_holder != 0) {
+							//this will print columns from the last call he/she made till the end shift
+							$col_ctr = $date_hour_holder;
+							while($col_ctr < 22) {
+								echo '<td>0</td>';
+								$col_ctr++;
+							}					
+							echo '</tr>';
 						}
-						echo '</tr>';
+						
 					} else {
 						echo "<p style='margin-left: 160px; color: red; font-weight: bold;'>INVALID INPUTS</p>";
 					}
