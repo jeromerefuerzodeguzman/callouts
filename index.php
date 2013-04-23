@@ -21,7 +21,8 @@
 			</form>
 		</div>
 	</div>
-	<div class="contentBody">
+	
+	<div class="contentBody" style="margin-top: 70px;">
 		<table border="1" class="contentTable">
 			<tr class="tableHead">
 				<td>Agent ID</td>
@@ -53,8 +54,19 @@
 				$nine_to_ten = 0;
 				$ten_to_eleven = 0;
 
+
+				//total agents currenty viewed
+				$total_agents = 0;
+
+				//overall total calls
+				$total_calls = 0;
+
+
 				//form submitted
 				if(isset($_POST['submit'])) {
+
+
+	
 
 					//holder for last date_hour
 					$date_hour_holder = 0;
@@ -64,9 +76,6 @@
 
 					//variable for total of each agent
 					$total_calls_per_agent = 0;
-
-					//overall total calls
-					$total_calls = 0;
 
 					$record = new Record;
 
@@ -79,7 +88,6 @@
 						
 						while ($row = odbc_fetch_array($result)) {
 							
-					
 							//for computing the sub-total per column
 							switch ($row['date_hour']) {
 							   	case '12':
@@ -156,7 +164,7 @@
 										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
 									}
-									
+									$total_agents++;
 									
 								} else {
 
@@ -167,6 +175,7 @@
 										$date_hour_holder++;
 									}
 									//closest the row for the next agent to be displayed
+									$total_agents++;
 									$total_calls += $total_calls_per_agent;
 									echo '<td>'. $total_calls_per_agent .'</td>';
 									echo '</tr>';
@@ -220,7 +229,9 @@
 						echo "<p style='margin-left: 160px; color: red; font-weight: bold;'>INVALID INPUTS</p>";
 					}
 				}
+				
 			?>
+
 			<!-- Printing subtotal for each column -->
 			<tr id="subtotal">
 				<td class="groupName">Sub TOTAL</td>
@@ -239,4 +250,17 @@
 			</tr>
 		</table>
 	</div>
+	<div class="contentBody upperPart" style="position: absolute; top: 315px;">
+		<table>
+			<tr>
+				<td class="groupName">Total Agents: </td>
+				<td><?php echo isset($total_agents) ? $total_agents : 0 ?></td>
+			</tr>
+			<tr>
+				<td class="groupName">Total Calls: </td>
+				<td><?php echo isset($total_calls) ? $total_calls : 0 ?></td>
+			</tr>
+		</table>
+	</div>
+
 <?php include "template-bottom.php"; ?>
