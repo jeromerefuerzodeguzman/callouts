@@ -7,6 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title>Singtel-Callouts</title>
+<meta http-equiv="refresh" content="30; URL=http://rampage/callouts/">
 <!-- Favicon -->
 <link rel="shortcut icon" href="fav.ico" />
 

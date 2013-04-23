@@ -1,4 +1,8 @@
-<?php include "template-top.php"; ?>
+<?php
+	include "template-top.php";
+	$today = date('m/d/Y');
+
+?>
 	<div class="contentBody w400">
 		<div class="contentTitle">Callouts</div>
 		<div class="clearFix"></div>
@@ -7,11 +11,11 @@
 			<table>
 				<tr>
 					<td>Start Date:</td>
-					<td><input type="text" class="datepicker" name="startDate" value="<?php echo isset($_POST['startDate']) ? $_POST['startDate'] : '' ?>" /></td>
+					<td><input type="text" class="datepicker" name="startDate" value="<?php echo isset($_POST['startDate']) ? $_POST['startDate'] : $today ?>" /></td>
 				</tr>
 				<tr>
 					<td>End Date:</td>
-					<td><input type="text" class="datepicker" name="endDate" value="<?php echo isset($_POST['endDate']) ? $_POST['endDate'] : '' ?>" /></td>
+					<td><input type="text" class="datepicker" name="endDate" value="<?php echo isset($_POST['endDate']) ? $_POST['endDate'] : $today ?>" /></td>
 				</tr>
 				<tr>
 					<td></td>
@@ -159,14 +163,14 @@
 										echo '<td>'. $row['total'] .'</td>';
 										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
-									} else {
+									}else {
 										echo '<td>'. ($row['date_hour'] == '12' ? $row['total'] : 0) .'</td>';
 										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
 									}
 									$total_agents++;
 									
-								} else {
+								}else {
 
 									
 									//this will print columns from the last call he/she made till the end shift
@@ -199,7 +203,171 @@
 										echo '<td>'. $row['total'] .'</td>';
 										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
-									} else {
+									}else {
+										echo '<td>'. ($row['date_hour'] == '12' ? $row['total'] : 0) .'</td>';
+										$total_calls_per_agent += $row['total'];
+										$date_hour_holder = $row['date_hour'];
+									}
+									
+							
+								}
+
+								
+							}
+
+						}
+						//check if we have fetch a row from the database or not
+						if($date_hour_holder != 0) {
+							//this will print columns from the last call he/she made till the end shift
+							$col_ctr = $date_hour_holder;
+							while($col_ctr < 22) {
+								echo '<td>0</td>';
+								$col_ctr++;
+							}					
+							$total_calls += $total_calls_per_agent;
+							echo '<td>'. $total_calls_per_agent .'</td>';
+							echo '</tr>';
+						}
+						
+					}else {
+						echo "<p style='margin-left: 160px; color: red; font-weight: bold;'>INVALID INPUTS</p>";
+					}
+				}else {
+
+
+
+					//holder for last date_hour
+					$date_hour_holder = 0;
+
+					//holder for last agentid
+					$last_agent = '';
+
+					//variable for total of each agent
+					$total_calls_per_agent = 0;
+
+					$record = new Record;
+
+					$start_date = $today;
+					$end_date = $today;
+					if(!empty($start_date) AND !empty($end_date)) {
+						
+						$query = "flipswitch_callouts_agent_hourly '$start_date 12:00 AM','$end_date 11:59 PM'";
+						$result = odbc_exec($record->conn, $query);
+						
+						while ($row = odbc_fetch_array($result)) {
+							
+							//for computing the sub-total per column
+							switch ($row['date_hour']) {
+							   	case '12':
+							        $twelve_to_one += $row['total'];
+							        break;
+							  	case '13':
+							        $one_to_two += $row['total'];
+							        break;
+							  	case '14':
+							        $two_to_three += $row['total'];
+							        break;
+							    case '15':
+							        $three_to_four += $row['total'];
+							        break;
+							    case '16':
+							        $four_to_five += $row['total'];
+							        break;
+							    case '17':
+							        $five_to_six += $row['total'];
+							        break;
+							    case '18':
+							        $six_to_seven += $row['total'];
+							        break;
+							    case '19':
+							        $seven_to_eight += $row['total'];
+							        break;
+							    case '20':
+							        $eight_to_nine += $row['total'];
+							        break;
+							    case '21':
+							        $nine_to_ten += $row['total'];
+							        break;
+							    case '22':
+							        $ten_to_eleven += $row['total'];
+							        break;
+							}
+
+							//check if the agent still have another row to be displayed
+							if($last_agent == $row['agentid']) {
+								//print a colum with 0 number of calls if there is call made
+								if($date_hour_holder+1 != $row['date_hour']) {
+									$diff = $row['date_hour'] - $date_hour_holder;
+									for($ctr = 1; $ctr < $diff; $ctr++) {
+										echo '<td>0</td>';
+									}
+								}
+								echo '<td>'. $row['total'] .'</td>';
+								$total_calls_per_agent += $row['total'];
+								$date_hour_holder = $row['date_hour'];	
+
+								
+							}else {
+								//in this section starts populating the table
+								if($last_agent == '') {
+									$last_agent = $row['agentid'];
+									echo '<tr onmouseover="mouseOn(this)" onmouseout="mouseOut(this)">';
+									echo '<td class="groupName">'. $row['agentid'] .'</td>';
+									
+									//check when the agent started his/her shift 
+									//if he/she started 1PM onwards this will print columns with 0 number of calls
+									//else if he/she started 12:00PM - 12:59PM it will just print the total calls for that time
+									if($row['date_hour'] > 12) {
+										//holder for loop purpose
+										$ctr = $row['date_hour'];
+										while($ctr > 12) {
+											echo '<td>0</td>';
+											$ctr--;
+										}
+										echo '<td>'. $row['total'] .'</td>';
+										$total_calls_per_agent += $row['total'];
+										$date_hour_holder = $row['date_hour'];
+									}else {
+										echo '<td>'. ($row['date_hour'] == '12' ? $row['total'] : 0) .'</td>';
+										$total_calls_per_agent += $row['total'];
+										$date_hour_holder = $row['date_hour'];
+									}
+									$total_agents++;
+									
+								}else {
+
+									
+									//this will print columns from the last call he/she made till the end shift
+									while($date_hour_holder < 22) {
+										echo '<td>0</td>';
+										$date_hour_holder++;
+									}
+									//closest the row for the next agent to be displayed
+									$total_agents++;
+									$total_calls += $total_calls_per_agent;
+									echo '<td>'. $total_calls_per_agent .'</td>';
+									echo '</tr>';
+									$total_calls_per_agent = 0;
+									//populates the next row for another agent
+									$last_agent = $row['agentid'];
+									echo '<tr onmouseover="mouseOn(this)" onmouseout="mouseOut(this)">';
+									echo '<td class="groupName">'. $row['agentid'] .'</td>';
+									
+									//check when the agent started his/her shift 
+									//if he/she started 1PM onwards this will print columns with 0 number of calls
+									//else if he/she started 12:00PM - 12:59PM it will just print the total calls for that time
+									
+									if($row['date_hour'] > 12) {
+										//holder for loop purpose
+										$ctr = $row['date_hour'];
+										while($ctr > 12) {
+											echo '<td>0</td>';
+											$ctr--;
+										}
+										echo '<td>'. $row['total'] .'</td>';
+										$total_calls_per_agent += $row['total'];
+										$date_hour_holder = $row['date_hour'];
+									}else {
 										echo '<td>'. ($row['date_hour'] == '12' ? $row['total'] : 0) .'</td>';
 										$total_calls_per_agent += $row['total'];
 										$date_hour_holder = $row['date_hour'];
